@@ -39,11 +39,14 @@ Build and run the project locally using:
 
 ```bash
 # Build the image
-docker build -t alpha-sphere-project:latest .
+docker build --provenance=false -t alpha-sphere-project:latest .                                               
 
 # Run locally using the local_run.py script
 docker run --rm -e GEMINI_API_KEY=<your_key> --entrypoint python alpha-sphere-project:latest local_run.py
 ```
+
+**Why --provenance=false?**
+Recent versions of Docker automatically attach provenance attestations (metadata about the build process), which creates a more complex multi-platform manifest list. This extra layer can sometimes cause compatibility issues or "manifest unknown" errors when pushing to Amazon ECR or executing within the AWS Lambda container runtime. Disabling it ensures a standard, flat OCI container image is generated, guaranteeing seamless integration with AWS.
 
 **Why override the entrypoint?**
 The `Dockerfile` is configured to execute `main.lambda_handler` by default, which is designed for the AWS Lambda environment. Overriding the entrypoint with `python` allows us to execute `local_run.py` directly, facilitating rapid local development and testing without needing a Lambda emulator.

@@ -4,7 +4,8 @@ from google import genai
 from google.genai import types
 
 load_dotenv()
-client = genai.Client()
+api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("API_KEY")
+client = genai.Client(api_key=api_key)
 
 SYSTEM_PROMPT = """You are OptiBot, the customer-support bot for OptiSigns.com.
 • Tone: helpful, factual, concise.
@@ -16,15 +17,19 @@ def query_bot():
     print("Calling assistant...")
     
     print("Scanning uploaded files on Google Cloud...")
-    all_files = list(client.files.list())
-    uploaded_files = all_files[:40] 
+    uploaded_files = [f for f in client.files.list() if f.state == "ACTIVE"]
     
     print(f"Successfully retrieved {len(uploaded_files)} files.")
     
     question = "How do I add a YouTube video?"
     print(f"\nUser: {question}")
     
-    contents = uploaded_files + [question]
+    contents = [
+        types.Part.from_uri(file_uri=f.uri, mime_type=f.mime_type) 
+        for f in uploaded_files
+    ]
+    contents.append(question)
+    # --------------------------
     
     try:
         print("Sending request to gemini-2.5-flash...")
