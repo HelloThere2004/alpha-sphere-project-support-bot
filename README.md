@@ -67,3 +67,7 @@ The scraper runs as a daily automated job via AWS EventBridge. Below are the exe
 *(See: `images/Email notification for daily scraper job.png`)*
 - **Chat bot output:** Response from the chat bot.
 *(See: `images/Chat bot output.png`)*
+- **Crawled Articles Proof:** Terminal output displaying more than 30 scraped articles from the target domain.
+*(See: `images/Crawled articles.png`)*
+- **Cleaned Markdown Proof:** Execution log showing normalized Markdown format and content conversion.
+*(See: `images/Content of crawled articles.png`)*
